@@ -1,0 +1,315 @@
+{
+  "gameConfig": {
+    "actionsPerPlayerPerDay": 3,
+    "repairCostPerHP": 0.5,
+    "attackRequiredPlayers": 2
+  },
+  "buildings": {
+    "defense": [
+      {
+        "id": "basic-wall",
+        "name": "Basic Wall",
+        "cost": 1,
+        "buildTime": 0,
+        "hp": 10,
+        "maxHp": 10,
+        "effect": "Blocks 10 damage",
+        "type": "blocker",
+        "category": "defense",
+        "addsToBaseHP": 10
+      },
+      {
+        "id": "reinforced-wall",
+        "name": "Reinforced Wall",
+        "cost": 3,
+        "buildTime": 0,
+        "hp": 20,
+        "maxHp": 20,
+        "effect": "Blocks 20 damage",
+        "type": "blocker",
+        "category": "defense",
+        "addsToBaseHP": 20
+      },
+      {
+        "id": "fortress-wall",
+        "name": "Fortress Wall",
+        "cost": 5,
+        "buildTime": 0,
+        "hp": 35,
+        "maxHp": 35,
+        "effect": "Blocks 35 damage",
+        "type": "blocker",
+        "category": "defense",
+        "addsToBaseHP": 35
+      },
+      {
+        "id": "shield-gen",
+        "name": "Shield Generator",
+        "cost": 3,
+        "buildTime": 0,
+        "hp": 15,
+        "maxHp": 15,
+        "effect": "Blocks 15 damage, regenerates 5 HP/day",
+        "type": "blocker",
+        "category": "defense",
+        "regen": 5,
+        "addsToBaseHP": 15
+      },
+      {
+        "id": "turret",
+        "name": "Turret",
+        "cost": 2,
+        "buildTime": 0,
+        "hp": 0,
+        "maxHp": 0,
+        "effect": "Reflects 5 damage to attacker",
+        "type": "reactor",
+        "category": "defense",
+        "reflect": 5,
+        "addsToBaseHP": 0
+      },
+      {
+        "id": "mine",
+        "name": "Mine",
+        "cost": 1,
+        "buildTime": 0,
+        "hp": 0,
+        "maxHp": 0,
+        "effect": "Deals 10 damage to attacker",
+        "type": "reactor",
+        "category": "defense",
+        "damage": 10,
+        "addsToBaseHP": 0
+      },
+      {
+        "id": "alarm",
+        "name": "Alarm System",
+        "cost": 2,
+        "buildTime": 0,
+        "hp": 0,
+        "maxHp": 0,
+        "effect": "Grants +3 emergency actions when triggered",
+        "type": "reactor",
+        "category": "defense",
+        "bonus": 3,
+        "addsToBaseHP": 0
+      },
+      {
+        "id": "sensor",
+        "name": "Sensor Array",
+        "cost": 2,
+        "buildTime": 0,
+        "hp": 0,
+        "maxHp": 0,
+        "effect": "Reveals incoming attacks (not destroyed)",
+        "type": "deflector",
+        "category": "defense",
+        "addsToBaseHP": 0
+      },
+      {
+        "id": "smoke",
+        "name": "Smoke Screen",
+        "cost": 2,
+        "buildTime": 0,
+        "hp": 0,
+        "maxHp": 0,
+        "effect": "Reduces incoming damage by 25%",
+        "type": "deflector",
+        "category": "defense",
+        "reduction": 0.25,
+        "addsToBaseHP": 0
+      },
+      {
+        "id": "decoy",
+        "name": "Decoy Structure",
+        "cost": 1,
+        "buildTime": 0,
+        "hp": 5,
+        "maxHp": 5,
+        "effect": "50% chance to redirect attack",
+        "type": "deflector",
+        "category": "defense",
+        "addsToBaseHP": 5
+      }
+    ],
+    "production": [
+      {
+        "id": "workshop",
+        "name": "Workshop",
+        "cost": 2,
+        "buildTime": 0,
+        "hp": 15,
+        "maxHp": 15,
+        "effect": "Allows weapon building",
+        "type": "production",
+        "category": "production",
+        "addsToBaseHP": 15
+      },
+      {
+        "id": "adv-workshop",
+        "name": "Advanced Workshop",
+        "cost": 4,
+        "buildTime": 0,
+        "hp": 20,
+        "maxHp": 20,
+        "effect": "Build weapons 1 day faster",
+        "type": "production",
+        "category": "production",
+        "addsToBaseHP": 20
+      },
+      {
+        "id": "armory",
+        "name": "Armory",
+        "cost": 1,
+        "buildTime": 0,
+        "hp": 10,
+        "maxHp": 10,
+        "effect": "Store +3 weapons (base: 2)",
+        "type": "production",
+        "category": "production",
+        "addsToBaseHP": 10
+      },
+      {
+        "id": "laboratory",
+        "name": "Laboratory",
+        "cost": 3,
+        "buildTime": 0,
+        "hp": 20,
+        "maxHp": 20,
+        "effect": "Create special weapons",
+        "type": "production",
+        "category": "production",
+        "addsToBaseHP": 20
+      },
+      {
+        "id": "medical-bay",
+        "name": "Medical Bay",
+        "cost": 2,
+        "buildTime": 0,
+        "hp": 15,
+        "maxHp": 15,
+        "effect": "Heal 10 HP/day passively",
+        "type": "production",
+        "category": "production",
+        "heal": 10,
+        "addsToBaseHP": 15
+      },
+      {
+        "id": "emergency-shelter",
+        "name": "Emergency Shelter",
+        "cost": 4,
+        "buildTime": 0,
+        "hp": 25,
+        "maxHp": 25,
+        "effect": "Survive at 1 HP once per war",
+        "type": "production",
+        "category": "production",
+        "special": "lastStand",
+        "addsToBaseHP": 25
+      }
+    ],
+    "weapons": [
+      {
+        "id": "melee",
+        "name": "Melee Weapon",
+        "cost": 1,
+        "buildTime": 1,
+        "damage": 10,
+        "effect": "10 damage",
+        "category": "weapon"
+      },
+      {
+        "id": "ranged",
+        "name": "Ranged Weapon",
+        "cost": 2,
+        "buildTime": 1,
+        "damage": 15,
+        "effect": "15 damage",
+        "category": "weapon"
+      },
+      {
+        "id": "heavy",
+        "name": "Heavy Weapon",
+        "cost": 3,
+        "buildTime": 2,
+        "damage": 25,
+        "effect": "25 damage",
+        "category": "weapon"
+      },
+      {
+        "id": "siege",
+        "name": "Siege Engine",
+        "cost": 4,
+        "buildTime": 3,
+        "damage": 35,
+        "effect": "35 damage",
+        "category": "weapon"
+      }
+    ],
+    "special": [
+      {
+        "id": "emp",
+        "name": "EMP Bomb",
+        "cost": 3,
+        "buildTime": 2,
+        "damage": 0,
+        "effect": "Delays 1 facility for 2 days",
+        "special": "delay",
+        "category": "special"
+      },
+      {
+        "id": "corrosive",
+        "name": "Corrosive Agent",
+        "cost": 2,
+        "buildTime": 1,
+        "damage": 15,
+        "effect": "Ignore 10 defense (15 damage)",
+        "special": "pierce",
+        "pierce": 10,
+        "category": "special"
+      },
+      {
+        "id": "timebomb",
+        "name": "Time Bomb",
+        "cost": 4,
+        "buildTime": 3,
+        "damage": 20,
+        "effect": "20 damage after 2 days",
+        "special": "delayed",
+        "delay": 2,
+        "category": "special"
+      },
+      {
+        "id": "sabotage",
+        "name": "Sabotage Kit",
+        "cost": 2,
+        "buildTime": 1,
+        "damage": 0,
+        "effect": "Destroys 1 enemy weapon",
+        "special": "destroy",
+        "category": "special"
+      }
+    ]
+  },
+  "actions": {
+    "repair": {
+      "name": "Repair Structure",
+      "description": "Repair damaged structures",
+      "costPerHP": 0.5,
+      "note": "Costs 0.5 actions per HP restored (round up)"
+    },
+    "repairBase": {
+      "name": "Repair Base",
+      "description": "Repair base HP directly",
+      "costPerHP": 1,
+      "note": "Costs 1 action per HP restored"
+    },
+    "attack": {
+      "name": "Launch Attack",
+      "description": "Attack enemy base",
+      "requiredPlayers": 2,
+      "requiredWeapons": 1,
+      "note": "Requires exactly 2 players and at least 1 weapon"
+    }
+  }
+}
