@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberspace Faction War - Live Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background: #0a0a0a; color: #00ff00; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1, h2, h3 { color: #00ff00; text-shadow: 0 0 10px #00ff00; margin-bottom: 15px; }
+        h1 { text-align: center; font-size: 2em; border-bottom: 2px solid #00ff00; padding-bottom: 10px; margin-bottom: 30px; }
+        .banner { background: #1a1a1a; border: 2px solid #00ff00; padding: 15px; margin-bottom: 20px; text-align: center; border-radius: 5px; }
+        .last-update { color: #888; font-size: 12px; margin-top: 10px; }
+        .factions { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .faction { background: #1a1a1a; border: 2px solid #00ff00; padding: 20px; border-radius: 5px; }
+        .faction.dust-mite { border-color: #ffaa00; }
+        .faction.dust-mite h2 { color: #ffaa00; text-shadow: 0 0 10px #ffaa00; }
+        .base-stats { background: #0d0d0d; padding: 15px; margin: 15px 0; border-left: 3px solid #00ff00; }
+        .faction.dust-mite .base-stats { border-left-color: #ffaa00; }
+        .hp-bar { width: 100%; height: 25px; background: #000; border: 1px solid #00ff00; margin: 10px 0; border-radius: 3px; overflow: hidden; }
+        .hp-fill { height: 100%; background: linear-gradient(90deg, #00ff00, #00cc00); transition: width 0.3s; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; }
+        .faction.dust-mite .hp-fill { background: linear-gradient(90deg, #ffaa00, #ff8800); }
+        .structure-stack { background: #000; border: 1px solid #00ff00; padding: 15px; margin: 15px 0; min-height: 100px; }
+        .faction.dust-mite .structure-stack { border-color: #ffaa00; }
+        .structure-item { background: #0d0d0d; border: 1px solid #00ff00; padding: 10px; margin: 5px 0; }
+        .structure-item.destroyed { opacity: 0.3; text-decoration: line-through; }
+        .members-list { margin: 15px 0; }
+        .member-item { background: #0d0d0d; padding: 8px; margin: 5px 0; border-left: 3px solid #00ff00; display: flex; justify-content: space-between; align-items: center; }
+        .faction.dust-mite .member-item { border-left-color: #ffaa00; }
+        .action-tokens { display: inline-flex; gap: 3px; }
+        .token { width: 20px; height: 20px; background: #00ff00; border-radius: 50%; display: inline-block; }
+        .token.used { background: #003300; }
+        .faction.dust-mite .token { background: #ffaa00; }
+        .faction.dust-mite .token.used { background: #442200; }
+        .log-section { background: #1a1a1a; border: 2px solid #00ff00; padding: 20px; margin-top: 30px; border-radius: 5px; }
+        .log-entry { background: #0d0d0d; padding: 10px; margin: 5px 0; border-left: 3px solid #00ff00; }
+        .day-counter { font-size: 2em; text-align: center; padding: 20px; background: #1a1a1a; border: 2px solid #00ff00; margin-bottom: 20px; border-radius: 5px; }
+        .error { color: #ff0000; text-align: center; padding: 20px; }
+        .loading { text-align: center; padding: 50px; color: #888; }
+        @media (max-width: 768px) { .factions { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function PublicTracker() {
+            const [gameData, setGameData] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [lastUpdate, setLastUpdate] = useState(null);
+
+            const loadGameData = async () => {
+                try {
+                    setLoading(true);
+                    // Add timestamp to prevent caching
+                    const response = await fetch(`gamedata.json?t=${Date.now()}`);
+                    if (!response.ok) throw new Error('Could not load game data');
+                    const data = await response.json();
+                    setGameData(data);
+                    setLastUpdate(new Date().toLocaleString());
+                    setError(null);
+                } catch (err) {
+                    setError('Failed to load game data. Make sure gamedata.json exists.');
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            // Load on mount
+            useEffect(() => {
+                loadGameData();
+            }, []);
+
+            // Auto-refresh every 30 seconds
+            useEffect(() => {
+                const interval = setInterval(loadGameData, 30000);
+                return () => clearInterval(interval);
+            }, []);
+
+            if (loading && !gameData) {
+                return (
+                    <div className="container">
+                        <div className="loading">
+                            <h1>⚔️ LOADING BATTLE DATA...</h1>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (error && !gameData) {
+                return (
+                    <div className="container">
+                        <h1>⚔️ CYBERSPACE FACTION WAR ⚔️</h1>
+                        <div className="error">
+                            <h2>⚠️ {error}</h2>
+                            <button onClick={loadGameData} style={{
+                                background: '#003300',
+                                color: '#00ff00',
+                                border: '1px solid #00ff00',
+                                padding: '10px 20px',
+                                cursor: 'pointer',
+                                fontFamily: 'Courier New',
+                                marginTop: '20px'
+                            }}>
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (!gameData) return null;
+
+            const { currentDay, factions, log } = gameData;
+
+            const getTotalActions = (faction) => {
+                return faction.members.reduce((sum, m) => sum + m.actions, 0);
+            };
+
+            const renderFaction = (factionKey) => {
+                const faction = factions[factionKey];
+                return (
+                    <div className={`faction ${factionKey}`}>
+                        <h2>{faction.name}</h2>
+                        
+                        <div className="base-stats">
+                            <h3>Base HP: {faction.hp}/{faction.maxHp}</h3>
+                            <div className="hp-bar">
+                                <div className="hp-fill" style={{ width: `${(faction.hp / faction.maxHp) * 100}%` }}>
+                                    {faction.hp} HP
+                                </div>
+                            </div>
+                            <p>Total Actions Available: {getTotalActions(faction)}</p>
+                        </div>
+
+                        <div className="members-list">
+                            <h3>Members ({faction.members.length})</h3>
+                            {faction.members.length === 0 && <p style={{ color: '#666' }}>No members yet</p>}
+                            {faction.members.map((member, idx) => (
+                                <div key={idx} className="member-item">
+                                    <span>{member.name}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <div className="action-tokens">
+                                            {[...Array(member.maxActions)].map((_, i) => (
+                                                <span key={i} className={`token ${i >= member.actions ? 'used' : ''}`}></span>
+                                            ))}
+                                        </div>
+                                        <span style={{ minWidth: '30px' }}>{member.actions}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="structure-stack">
+                            <h3>Structure Stack (Top to Bottom)</h3>
+                            <p style={{ fontSize: '12px', color: '#888', marginBottom: '10px' }}>
+                                Attacks hit from top to bottom
+                            </p>
+                            {faction.structures.length === 0 && <p style={{ color: '#666' }}>No structures built yet</p>}
+                            {faction.structures.map((structure, idx) => (
+                                <div key={structure.id} className={`structure-item ${structure.currentHp === 0 ? 'destroyed' : ''}`}>
+                                    <strong>{idx + 1}. {structure.name}</strong>
+                                    {structure.hp > 0 && <span> - {structure.currentHp}/{structure.hp} HP</span>}
+                                    <div style={{ color: '#888', fontSize: '12px', marginTop: '5px' }}>{structure.effect}</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {faction.inProduction && faction.inProduction.length > 0 && (
+                            <div style={{ marginTop: '15px' }}>
+                                <h3>In Production</h3>
+                                {faction.inProduction.map((item, idx) => (
+                                    <div key={idx} style={{ background: '#0d0d0d', padding: '8px', margin: '5px 0' }}>
+                                        {item.name} - Ready Day {item.readyDay}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {faction.weapons && faction.weapons.length > 0 && (
+                            <div style={{ marginTop: '15px' }}>
+                                <h3>Weapons Ready ({faction.weapons.length})</h3>
+                                {faction.weapons.map((weapon) => (
+                                    <div key={weapon.id} style={{ background: '#0d0d0d', padding: '8px', margin: '5px 0' }}>
+                                        {weapon.name} - {weapon.effect}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
+            return (
+                <div className="container">
+                    <h1>⚔️ CYBERSPACE FACTION WAR ⚔️</h1>
+
+                    <div className="banner">
+                        <h3>📡 LIVE TRACKER</h3>
+                        <p>Public read-only view • Auto-updates every 30 seconds</p>
+                        {lastUpdate && <div className="last-update">Last updated: {lastUpdate}</div>}
+                    </div>
+
+                    <div className="day-counter">DAY {currentDay}</div>
+
+                    <div className="factions">
+                        {renderFaction('dustmite')}
+                        {renderFaction('bunker')}
+                    </div>
+
+                    <div className="log-section">
+                        <h2>Battle Log</h2>
+                        {(!log || log.length === 0) && <p style={{ color: '#666' }}>No battle events yet</p>}
+                        {log && log.slice(-30).reverse().map((entry, idx) => (
+                            <div key={idx} className="log-entry">
+                                <strong>Day {entry.day} [{entry.timestamp}]:</strong> {entry.message}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<PublicTracker />);
+    </script>
+</body>
+</html>

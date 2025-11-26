@@ -1,0 +1,24 @@
+{
+  "currentDay": 1,
+  "factions": {
+    "dustmite": {
+      "name": "Dust Mite",
+      "hp": 100,
+      "maxHp": 100,
+      "members": [],
+      "structures": [],
+      "weapons": [],
+      "inProduction": []
+    },
+    "bunker": {
+      "name": "Bunker",
+      "hp": 100,
+      "maxHp": 100,
+      "members": [],
+      "structures": [],
+      "weapons": [],
+      "inProduction": []
+    }
+  },
+  "log": []
+}
